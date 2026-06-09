@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Lead Response Kit</title>
+    <meta
+      name="description"
+      content="A 48-hour AI-assisted lead intake setup for small teams that handle WhatsApp, email, forms, and DMs."
+    />
+    <link rel="canonical" href="https://leadresponsekit.com/" />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #15201e;
+        --muted: #5b6562;
+        --line: #dce3df;
+        --paper: #fbfcf8;
+        --band: #eef5f1;
+        --teal: #0b7775;
+        --teal-dark: #075b59;
+        --coral: #c85b42;
+        --amber: #f0b84f;
+        --white: #ffffff;
+        --shadow: 0 18px 48px rgba(16, 36, 33, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(13, 33, 30, 0.78);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: min(1120px, calc(100% - 32px));
+        min-height: 64px;
+        margin: 0 auto;
+        gap: 20px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--white);
+        font-weight: 750;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .brand img {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .hero {
+        min-height: 86vh;
+        padding: 112px 0 72px;
+        color: var(--white);
+        background:
+          linear-gradient(90deg, rgba(7, 23, 21, 0.88), rgba(7, 23, 21, 0.54) 54%, rgba(7, 23, 21, 0.24)),
+          url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=82");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .hero-inner,
+      .section-inner {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 13px;
+        font-weight: 720;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        display: block;
+        width: 34px;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--amber);
+        content: "";
+      }
+
+      h1 {
+        max-width: 12ch;
+        margin: 0;
+        font-size: clamp(48px, 8vw, 86px);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .hero-text {
+        max-width: 650px;
+        margin: 24px 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(18px, 2.2vw, 23px);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 18px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-weight: 760;
+        text-decoration: none;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          border-color 160ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        background: var(--amber);
+        color: #1f1705;
+      }
+
+      .button.secondary {
+        border-color: rgba(255, 255, 255, 0.44);
+        color: var(--white);
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 28px;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 14px;
+      }
+
+      .hero-meta span {
+        padding: 7px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      section {
+        padding: 72px 0;
+      }
+
+      .proof-band {
+        padding: 22px 0;
+        background: var(--teal);
+        color: var(--white);
+      }
+
+      .proof-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .proof-item strong {
+        display: block;
+        font-size: 20px;
+      }
+
+      .proof-item span {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 14px;
+      }
+
+      .section-heading {
+        max-width: 760px;
+        margin-bottom: 34px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(32px, 5vw, 48px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      .section-heading p {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .panel,
+      .tile {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+        box-shadow: var(--shadow);
+      }
+
+      .panel {
+        padding: 24px;
+      }
+
+      .lead-table {
+        overflow: hidden;
+      }
+
+      .lead-row {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr 0.8fr;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+
+      .lead-row:last-child {
+        border-bottom: 0;
+      }
+
+      .lead-row.header {
+        background: var(--band);
+        color: var(--muted);
+        font-weight: 740;
+      }
+
+      .status {
+        display: inline-flex;
+        width: fit-content;
+        min-height: 26px;
+        align-items: center;
+        padding: 0 9px;
+        border-radius: 999px;
+        color: #17201d;
+        font-size: 12px;
+        font-weight: 780;
+      }
+
+      .hot {
+        background: #ffe4d7;
+      }
+
+      .warm {
+        background: #fff0bd;
+      }
+
+      .ready {
+        background: #cceee9;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .tile {
+        min-height: 182px;
+        padding: 22px;
+      }
+
+      .tile b {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .tile p,
+      .tile ul {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .tile ul {
+        padding-left: 18px;
+      }
+
+      .band {
+        background: var(--band);
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .step {
+        min-height: 150px;
+        border-left: 4px solid var(--teal);
+        padding: 18px;
+        border-radius: 8px;
+        background: var(--white);
+      }
+
+      .step span {
+        color: var(--coral);
+        font-weight: 820;
+      }
+
+      .price-row {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .price {
+        display: flex;
+        min-height: 340px;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .price h2 {
+        margin: 0;
+        font-size: 38px;
+        letter-spacing: 0;
+      }
+
+      .amount {
+        margin: 18px 0;
+        font-size: clamp(46px, 7vw, 68px);
+        font-weight: 850;
+        line-height: 1;
+      }
+
+      .amount small {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .payment-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .payment-actions .button {
+        width: 100%;
+      }
+
+      .button.dark {
+        background: var(--teal-dark);
+        color: var(--white);
+      }
+
+      .button.light {
+        border-color: var(--line);
+        background: var(--white);
+        color: var(--ink);
+      }
+
+      .fineprint {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .contact-strip {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px;
+        border-radius: 8px;
+        background: #15201e;
+        color: var(--white);
+      }
+
+      .niche-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        margin: 18px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .niche-item {
+        min-height: 56px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--line);
+        font-weight: 740;
+      }
+
+      footer {
+        padding: 32px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media (max-width: 860px) {
+        .nav {
+          min-height: 58px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          min-height: 82vh;
+          padding-top: 96px;
+          background:
+            linear-gradient(180deg, rgba(7, 23, 21, 0.9), rgba(7, 23, 21, 0.7) 58%, rgba(7, 23, 21, 0.5)),
+            url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1100&q=82");
+          background-position: center;
+        }
+
+        h1 {
+          font-size: clamp(44px, 15vw, 64px);
+        }
+
+        .split,
+        .grid-3,
+        .price-row,
+        .proof-grid,
+        .steps {
+          grid-template-columns: 1fr;
+        }
+
+        .lead-row {
+          grid-template-columns: 1fr;
+        }
+
+        .payment-actions {
+          grid-template-columns: 1fr;
+        }
+
+        section {
+          padding: 54px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="#top">
+          <img src="../assets/telegram-avatar-ai-lead-operator.png" alt="" />
+          <span>AI Lead Operator</span>
+        </a>
+        <div class="nav-links">
+          <a href="#workflow">Workflow</a>
+          <a href="#starter">Starter</a>
+          <a href="mailto:k1w11assist@gmail.com?subject=AI%20Lead%20Response%20Kit%20example">Example</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="eyebrow">48-hour starter setup</div>
+            <h1 id="hero-title">AI Lead Response Kit</h1>
+            <p class="hero-text">
+              Stop losing hot leads because WhatsApp, email, forms, and DMs are messy. Get a clean AI-assisted intake workflow that captures inquiries, qualifies leads, drafts replies, and gives the owner a daily priority summary.
+            </p>
+            <div class="actions">
+          <a class="button primary" href="#starter">Get the starter setup</a>
+          <a class="button secondary" href="https://wa.me/66825581041" target="_blank" rel="noopener">Ask on WhatsApp</a>
+            </div>
+            <div class="hero-meta" aria-label="Service details">
+              <span>Human-approved replies</span>
+              <span>48-hour turnaround</span>
+              <span>RU / EN delivery</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="proof-band">
+        <div class="section-inner proof-grid" aria-label="Offer highlights">
+          <div class="proof-item">
+            <strong>1 table</strong>
+            <span>Lead source, urgency, owner, next action</span>
+          </div>
+          <div class="proof-item">
+            <strong>2 questions</strong>
+            <span>Fit and slowdown mapped before payment link</span>
+          </div>
+          <div class="proof-item">
+            <strong>48 hours</strong>
+            <span>Starter workflow prepared after intake</span>
+          </div>
+          <div class="proof-item">
+            <strong>7 days</strong>
+            <span>Light support after delivery</span>
+          </div>
+        </div>
+      </div>
+
+      <section aria-labelledby="why-title">
+        <div class="section-inner split">
+          <div class="section-heading">
+            <h2 id="why-title">A simple response system before a complex CRM.</h2>
+            <p>
+              Most small teams already have leads. The gap is speed, clarity, and knowing which message deserves attention first.
+            </p>
+          </div>
+          <div class="panel lead-table" aria-label="Sample lead intake table">
+            <div class="lead-row header">
+              <span>Lead</span>
+              <span>Need</span>
+              <span>Status</span>
+            </div>
+            <div class="lead-row">
+              <span>WhatsApp inquiry</span>
+              <span>Clinic consultation</span>
+              <span class="status hot">Urgent</span>
+            </div>
+            <div class="lead-row">
+              <span>Website form</span>
+              <span>Company setup</span>
+              <span class="status ready">Ready</span>
+            </div>
+            <div class="lead-row">
+              <span>Email thread</span>
+              <span>Property viewing</span>
+              <span class="status warm">Follow up</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" aria-labelledby="includes-title">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2 id="includes-title">What the starter kit includes</h2>
+            <p>Built for teams that need a working intake flow, not a long software project.</p>
+          </div>
+          <div class="grid-3">
+            <article class="tile">
+              <b>Intake foundation</b>
+              <ul>
+                <li>Lead table structure</li>
+                <li>Source and urgency fields</li>
+                <li>Owner summary template</li>
+              </ul>
+            </article>
+            <article class="tile">
+              <b>Qualification layer</b>
+              <ul>
+                <li>First-pass questions</li>
+                <li>Repeated-question scripts</li>
+                <li>Lead priority rules</li>
+              </ul>
+            </article>
+            <article class="tile">
+              <b>Reply workflow</b>
+              <ul>
+                <li>AI-assisted reply drafts</li>
+                <li>Human approval gate</li>
+                <li>7 days light support</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow" aria-labelledby="workflow-title">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2 id="workflow-title">The order flow</h2>
+            <p>Clear steps from interest to delivery, with payment verification before client work starts.</p>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <span>01</span>
+              <p>Share where new inquiries arrive now.</p>
+            </div>
+            <div class="step">
+              <span>02</span>
+              <p>Pay for the starter setup.</p>
+            </div>
+            <div class="step">
+              <span>03</span>
+              <p>Complete the intake form.</p>
+            </div>
+            <div class="step">
+              <span>04</span>
+              <p>Review the workflow draft.</p>
+            </div>
+            <div class="step">
+              <span>05</span>
+              <p>Launch with human-approved replies.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="starter" class="band" aria-labelledby="starter-title">
+        <div class="section-inner price-row">
+          <div class="panel price">
+            <div>
+              <h2 id="starter-title">Starter setup</h2>
+              <div class="amount">
+                $149
+                <small>or 10,900 RUB</small>
+              </div>
+              <p class="fineprint">
+                Delivery starts after payment verification and a completed intake form.
+              </p>
+            </div>
+            <div class="payment-actions">
+              <a
+                class="button dark"
+                href="https://buy.polar.sh/polar_cl_fDX19MUsc7lZwuNIAuz5MQEdfQfYAPfIiLidr22T5Q5?product_id=c7b3e9d4-cd72-4487-afa0-8395dbe95d42"
+                target="_blank"
+                rel="noopener"
+              >
+                Pay by card
+              </a>
+              <a class="button light" href="https://yookassa.ru/my/i/aie04KqN8AJI/l" target="_blank" rel="noopener">
+                Pay in RUB
+              </a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Built for</h2>
+            <div class="niche-list">
+              <div class="niche-item">Business setup / PRO</div>
+              <div class="niche-item">Real estate teams</div>
+              <div class="niche-item">Clinics and salons</div>
+              <div class="niche-item">Agencies and consultants</div>
+            </div>
+            <p class="fineprint">
+              This is not a sales guarantee. AI does not automatically message customers in the starter version. It prepares structure and drafts; a human approves what gets sent.
+            </p>
+            <div class="actions">
+              <a
+                class="button dark"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSevq_GOK8xX2vU4sYnhWtGE2JAshIRVFcpp3JBYM7IN2eAYXA/viewform"
+                target="_blank"
+                rel="noopener"
+              >
+                Complete intake
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="Contact">
+        <div class="section-inner contact-strip">
+          <div>
+            <strong>Want a quick example for your business type?</strong>
+            <div>Send the main inquiry channel and the current slowdown.</div>
+          </div>
+          <div class="actions" style="margin: 0;">
+            <a class="button primary" href="https://wa.me/66825581041" target="_blank" rel="noopener">
+              WhatsApp operator line
+            </a>
+            <a class="button secondary" href="mailto:k1w11assist@gmail.com?subject=AI%20Lead%20Response%20Kit%20example">
+              Email the operator
+            </a>
+            <a class="button secondary" href="https://t.me/aileadoperator_dxb" target="_blank" rel="noopener">
+              Telegram
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="section-inner">
+        AI Lead Operator. Starter setup for AI-assisted intake, reply drafts, and owner summaries.
+      </div>
+    </footer>
+  </body>
+</html>
